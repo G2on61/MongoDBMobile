@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { copyText } from '../lib/clipboard.ts'
 import type { QueryInput } from '../types.ts'
 
 interface QueryPanelProps {
@@ -20,6 +22,16 @@ export function QueryPanel({
   canSave,
   running,
 }: QueryPanelProps) {
+  const [copied, setCopied] = useState(false)
+
+  const copyFilter = async () => {
+    const ok = await copyText(query.filter.trim() || '{}')
+    if (ok) {
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1500)
+    }
+  }
+
   return (
     <section className="panel query-panel" aria-label="Éditeur de requête">
       <div className="panel-header">
@@ -51,6 +63,9 @@ export function QueryPanel({
             {example}
           </button>
         ))}
+        <button type="button" className="chip small" onClick={copyFilter}>
+          {copied ? 'Copié ✓' : 'Copier'}
+        </button>
       </div>
 
       <label className="field">
