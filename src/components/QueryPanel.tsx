@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import type { KeyboardEvent } from 'react'
 import { copyText } from '../lib/clipboard.ts'
+import { isRunShortcut } from '../lib/shortcuts.ts'
 import type { QueryInput } from '../types.ts'
 
 interface QueryPanelProps {
@@ -32,6 +34,13 @@ export function QueryPanel({
     }
   }
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (isRunShortcut(event)) {
+      event.preventDefault()
+      onRun()
+    }
+  }
+
   return (
     <section className="panel query-panel" aria-label="Éditeur de requête">
       <div className="panel-header">
@@ -50,6 +59,7 @@ export function QueryPanel({
           rows={3}
           spellCheck={false}
           aria-label="Filtre JSON"
+          onKeyDown={handleKeyDown}
         />
       </label>
       <div className="chips">
@@ -76,6 +86,7 @@ export function QueryPanel({
           rows={2}
           spellCheck={false}
           aria-label="Tri JSON"
+          onKeyDown={handleKeyDown}
         />
       </label>
       <div className="chips">
@@ -122,8 +133,8 @@ export function QueryPanel({
         </button>
       </div>
       <p className="hint">
-        Opérateurs : $eq, $ne, $gt, $gte, $lt, $lte, $in, $nin, $exists, $regex, $contains, $or,
-        $and.
+        Ctrl/Cmd + Entrée exécute la requête. Opérateurs : $eq, $ne, $gt, $gte, $lt, $lte, $in,
+        $nin, $exists, $regex, $contains, $or, $and.
       </p>
     </section>
   )
