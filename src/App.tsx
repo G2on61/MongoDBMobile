@@ -11,11 +11,13 @@ import {
 } from './lib/repository.ts'
 import { downloadCsv } from './lib/export.ts'
 import { DEFAULT_QUERY } from './lib/query.ts'
+import { loadHistory, pushHistory } from './lib/queryHistory.ts'
 import { loadSavedQueries, persistSavedQueries } from './lib/savedQueries.ts'
 import type {
   ConnectionInfo,
   DocumentPage,
   JsonObject,
+  QueryEntry,
   QueryInput,
   SavedQuery,
 } from './types.ts'
@@ -38,6 +40,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null)
   const [selectedDocument, setSelectedDocument] = useState<JsonObject | null>(null)
   const [saved, setSaved] = useState<SavedQuery[]>(() => loadSavedQueries())
+  const [history, setHistory] = useState<QueryEntry[]>(() => loadHistory())
   const [saveName, setSaveName] = useState('')
 
   const repository = useMemo(
@@ -198,6 +201,18 @@ export default function App() {
     setPage(null)
     setError(null)
     setLoading(true)
+
+    if (database && collection) {
+      const entry: QueryEntry = {
+        id: crypto.randomUUID(),
+        connectionId,
+        database,
+        collection,
+        query: { ...query },
+        createdAt: Date.now(),
+      }
+      setHistory((previous) => pushHistory(previous, entry))
+    }
   }
 
   const saveQuery = () => {
@@ -232,7 +247,7 @@ export default function App() {
     })
   }
 
-  const openSaved = (entry: SavedQuery) => {
+  const openSaved = (entry: QueryEntry) => {
     setConnectionId(entry.connectionId)
     setDatabase(entry.database)
     setCollection(entry.collection)
@@ -511,6 +526,38 @@ export default function App() {
                         onClick={() => removeSaved(entry.id)}
                       >
                         Supprimer
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="panel">
+              <div className="panel-header">
+                <div>
+                  <p className="eyebrow">10 dernières exécutions</p>
+                  <h2>Historique</h2>
+                </div>
+                <span className="pill">{history.length}</span>
+              </div>
+              {history.length === 0 && <p className="empty">Aucune requête exécutée.</p>}
+              <div className="saved-list">
+                {history.map((entry) => (
+                  <article className="saved-item" key={entry.id}>
+                    <div>
+                      <p>
+                        {entry.database}.{entry.collection}
+                      </p>
+                      <code>{entry.query.filter}</code>
+                    </div>
+                    <div className="saved-actions">
+                      <button
+                        type="button"
+                        className="button primary"
+                        onClick={() => openSaved(entry)}
+                      >
+                        Rejouer
                       </button>
                     </div>
                   </article>

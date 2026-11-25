@@ -34,12 +34,15 @@ export interface MongoRepository {
   ): Promise<DocumentPage>
 }
 
-export interface SavedQuery {
+export interface QueryEntry {
   id: string
-  name: string
   connectionId: string
   database: string
   collection: string
   query: QueryInput
   createdAt: number
+}
+
+export interface SavedQuery extends QueryEntry {
+  name: string
 }
