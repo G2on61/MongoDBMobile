@@ -7,6 +7,7 @@ interface ResultsListProps {
   eyebrow: string
   title: string
   countLabel: string
+  durationMs?: number | null
   documents: JsonObject[]
   loading: boolean
   error?: string | null
@@ -21,6 +22,7 @@ export function ResultsList({
   eyebrow,
   title,
   countLabel,
+  durationMs,
   documents,
   loading,
   error,
@@ -39,6 +41,9 @@ export function ResultsList({
         </div>
         <div className="header-actions">
           <span className="pill">{countLabel}</span>
+          {durationMs !== undefined && durationMs !== null && (
+            <span className="pill">{durationMs} ms</span>
+          )}
           <button
             type="button"
             className="button secondary compact"
