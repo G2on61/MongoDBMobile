@@ -13,6 +13,7 @@ import { downloadCsv } from './lib/export.ts'
 import { DEFAULT_QUERY } from './lib/query.ts'
 import { loadHistory, pushHistory } from './lib/queryHistory.ts'
 import { loadSavedQueries, persistSavedQueries } from './lib/savedQueries.ts'
+import { applyTheme, loadTheme, saveTheme } from './lib/theme.ts'
 import type {
   ConnectionInfo,
   DocumentPage,
@@ -20,6 +21,7 @@ import type {
   QueryEntry,
   QueryInput,
   SavedQuery,
+  Theme,
 } from './types.ts'
 
 type Tab = 'explore' | 'query' | 'saved'
@@ -42,6 +44,7 @@ export default function App() {
   const [saved, setSaved] = useState<SavedQuery[]>(() => loadSavedQueries())
   const [history, setHistory] = useState<QueryEntry[]>(() => loadHistory())
   const [saveName, setSaveName] = useState('')
+  const [theme, setTheme] = useState<Theme>(() => loadTheme())
 
   const repository = useMemo(
     () =>
@@ -77,6 +80,10 @@ export default function App() {
       cancelled = true
     }
   }, [])
+
+  useEffect(() => {
+    applyTheme(theme)
+  }, [theme])
 
   useEffect(() => {
     let cancelled = false
@@ -308,6 +315,18 @@ export default function App() {
             {currentConnection.kind === 'demo' ? 'Mode démo' : gatewayOnline ? 'Gateway' : 'Hors ligne'}
           </span>
         </div>
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={() => {
+            const next: Theme = theme === 'dark' ? 'light' : 'dark'
+            setTheme(next)
+            saveTheme(next)
+          }}
+          aria-label="Changer de thème"
+        >
+          {theme === 'dark' ? '☀' : '☾'}
+        </button>
       </header>
 
       <main>

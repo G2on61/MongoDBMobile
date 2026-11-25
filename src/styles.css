@@ -129,6 +129,16 @@ h3 {
   color: #f4fbf6;
 }
 
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #2c4937;
+  border-radius: 10px;
+  background: #14291c;
+  color: #f4fbf6;
+  font-size: 1rem;
+}
+
 .status {
   padding: 5px 10px;
   border-radius: 999px;
@@ -641,8 +651,27 @@ main {
   }
 }
 
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0d1510;
+  --surface: #142019;
+  --surface-alt: #1a2920;
+  --text: #e8f3ec;
+  --muted: #9bb0a2;
+  --border: #2a3d31;
+  --green: #2fa568;
+  --green-dark: #8fe0b3;
+  --green-soft: #173528;
+  --danger: #ff9b8f;
+  --danger-soft: #3a1b18;
+}
+
+:root[data-theme='dark'] .tabbar {
+  background: rgba(20, 32, 25, 0.96);
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     color-scheme: dark;
     --bg: #0d1510;
     --surface: #142019;
@@ -657,7 +686,7 @@ main {
     --danger-soft: #3a1b18;
   }
 
-  .tabbar {
+  :root:not([data-theme='light']) .tabbar {
     background: rgba(20, 32, 25, 0.96);
   }
 }
