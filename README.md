@@ -18,6 +18,7 @@ Le vrai besoin : consulter une base en déplacement (debug d'une issue en produc
 - Opérateurs JS interdits côté gateway (`$where`, `$function`, `$accumulator`).
 - Requêtes enregistrées dans le navigateur (`localStorage`).
 - Export CSV des documents affichés.
+- Historique des 10 dernières requêtes, rejouables en un tap.
 - Mode démo intégré : fonctionne sans MongoDB et sans gateway.
 - Interface responsive : barre d'onglets en bas sur mobile, en haut sur desktop, dark mode.
 

@@ -30,5 +30,4 @@ npm run build
 
 - vue arborescente des collections,
 - raccourcis clavier,
-- cache des dernières requêtes,
 - notifications pour les longues requêtes.
