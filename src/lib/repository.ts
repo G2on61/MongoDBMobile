@@ -98,6 +98,23 @@ export async function checkGateway(baseUrl = '/api'): Promise<boolean> {
   }
 }
 
+export async function fetchGatewayVersion(baseUrl = '/api'): Promise<string | null> {
+  try {
+    const response = await fetch(`${baseUrl}/version`)
+    if (!response.ok) {
+      return null
+    }
+    const payload: unknown = await response.json()
+    if (typeof payload !== 'object' || payload === null || !('version' in payload)) {
+      return null
+    }
+    const version = (payload as { version: unknown }).version
+    return typeof version === 'string' ? version : null
+  } catch {
+    return null
+  }
+}
+
 export async function fetchGatewayConnections(baseUrl = '/api'): Promise<ConnectionInfo[]> {
   try {
     const response = await fetch(`${baseUrl}/connections`)
