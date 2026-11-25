@@ -22,6 +22,10 @@ Le vrai besoin : consulter une base en déplacement (debug d'une issue en produc
 - Mode démo intégré : fonctionne sans MongoDB et sans gateway.
 - Interface responsive : barre d'onglets en bas sur mobile, en haut sur desktop, dark mode.
 
+## Prérequis
+
+Node 24+ (version utilisée par la CI).
+
 ## Démarrage
 
 ```bash
