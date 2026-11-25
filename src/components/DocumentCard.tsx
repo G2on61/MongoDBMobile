@@ -19,7 +19,12 @@ export function DocumentCard({ document, onOpen }: DocumentCardProps) {
     .slice(0, 3)
 
   return (
-    <button type="button" className="doc-card" onClick={() => onOpen(document)}>
+    <button
+      type="button"
+      className="doc-card"
+      onClick={() => onOpen(document)}
+      aria-label={`Ouvrir le document ${String(document._id ?? 'sans identifiant')}`}
+    >
       <span className="doc-id">{String(document._id ?? '—')}</span>
       <span className="doc-fields">
         {fields.map((key) => (

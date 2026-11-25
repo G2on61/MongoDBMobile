@@ -329,7 +329,7 @@ export default function App() {
         </button>
       </header>
 
-      <main>
+      <main aria-busy={loading}>
         {error && (
           <div className="banner error" role="alert">
             <span>{error}</span>
@@ -420,7 +420,11 @@ export default function App() {
                   </button>
                 </div>
               </div>
-              {loading && <p className="empty">Chargement…</p>}
+              {loading && (
+                <p className="empty" role="status" aria-live="polite">
+                  Chargement…
+                </p>
+              )}
               {!loading && documents.length === 0 && (
                 <p className="empty">Aucun document à afficher.</p>
               )}
@@ -489,7 +493,11 @@ export default function App() {
                 </div>
               </div>
               {error && <p className="empty error-text">{error}</p>}
-              {!error && loading && <p className="empty">Exécution…</p>}
+              {!error && loading && (
+                <p className="empty" role="status" aria-live="polite">
+                  Exécution…
+                </p>
+              )}
               {!error && !loading && documents.length === 0 && (
                 <p className="empty">Aucun document ne correspond au filtre.</p>
               )}

@@ -54,7 +54,13 @@ export function DocumentSheet({ document, onClose }: DocumentSheetProps) {
             <p className="eyebrow">Document</p>
             <h2>{String(document._id ?? 'Sans identifiant')}</h2>
           </div>
-          <button type="button" className="icon-button" onClick={onClose} aria-label="Fermer">
+          <button
+            type="button"
+            className="icon-button"
+            onClick={onClose}
+            aria-label="Fermer"
+            autoFocus
+          >
             ✕
           </button>
         </header>
