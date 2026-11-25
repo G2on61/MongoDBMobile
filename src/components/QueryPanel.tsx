@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { copyText } from '../lib/clipboard.ts'
+import { DEFAULT_QUERY } from '../lib/query.ts'
 import { isRunShortcut } from '../lib/shortcuts.ts'
 import type { QueryInput } from '../types.ts'
 
@@ -130,6 +131,13 @@ export function QueryPanel({
         </button>
         <button type="button" className="button secondary" onClick={onSave} disabled={!canSave}>
           Enregistrer
+        </button>
+        <button
+          type="button"
+          className="button secondary"
+          onClick={() => onChange({ ...DEFAULT_QUERY })}
+        >
+          Réinitialiser
         </button>
       </div>
       <p className="hint">
