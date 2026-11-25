@@ -74,4 +74,4 @@ Le dépôt HTTP envoie l'en-tête `X-Connection-Id` au gateway. Celui-ci choisit
 
 ## Contribuer
 
-Les PRs sont bienvenues : chaque changement passe par une branche, une PR et la CI. Voir [CONTRIBUTING.md](CONTRIBUTING.md).
+Les PRs sont bienvenues : chaque changement passe par une branche, une PR et la CI. Voir [CONTRIBUTING.md](CONTRIBUTING.md) et la [FAQ](FAQ.md).
