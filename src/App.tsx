@@ -9,6 +9,7 @@ import {
   DEMO_CONNECTION,
   fetchGatewayConnections,
 } from './lib/repository.ts'
+import { downloadCsv } from './lib/export.ts'
 import { DEFAULT_QUERY } from './lib/query.ts'
 import { loadSavedQueries, persistSavedQueries } from './lib/savedQueries.ts'
 import type {
@@ -371,9 +372,19 @@ export default function App() {
                   <p className="eyebrow">{collection || '—'}</p>
                   <h2>Documents</h2>
                 </div>
-                <span className="pill">
-                  {page ? `${page.total} trouvé${page.total > 1 ? 's' : ''}` : '—'}
-                </span>
+                <div className="header-actions">
+                  <span className="pill">
+                    {page ? `${page.total} trouvé${page.total > 1 ? 's' : ''}` : '—'}
+                  </span>
+                  <button
+                    type="button"
+                    className="button secondary compact"
+                    onClick={() => downloadCsv(documents, `${database}-${collection}`)}
+                    disabled={documents.length === 0}
+                  >
+                    CSV ↓
+                  </button>
+                </div>
               </div>
               {loading && <p className="empty">Chargement…</p>}
               {!loading && documents.length === 0 && (
@@ -431,7 +442,17 @@ export default function App() {
                   <p className="eyebrow">Résultat</p>
                   <h2>{database && collection ? `${database}.${collection}` : 'Sélectionnez une collection'}</h2>
                 </div>
-                <span className="pill">{page?.total ?? 0}</span>
+                <div className="header-actions">
+                  <span className="pill">{page?.total ?? 0}</span>
+                  <button
+                    type="button"
+                    className="button secondary compact"
+                    onClick={() => downloadCsv(documents, `${database}-${collection}`)}
+                    disabled={documents.length === 0}
+                  >
+                    CSV ↓
+                  </button>
+                </div>
               </div>
               {error && <p className="empty error-text">{error}</p>}
               {!error && loading && <p className="empty">Exécution…</p>}
