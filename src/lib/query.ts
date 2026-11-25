@@ -76,9 +76,19 @@ function matchesCondition(value: JsonValue | undefined, condition: JsonValue): b
       case '$lte':
         return typeof value === 'number' && typeof expected === 'number' && value <= expected
       case '$in':
-        return Array.isArray(expected) && expected.some((item) => item === value)
+        if (!Array.isArray(expected)) {
+          return false
+        }
+        return Array.isArray(value)
+          ? value.some((item) => expected.includes(item))
+          : expected.some((item) => item === value)
       case '$nin':
-        return Array.isArray(expected) && expected.every((item) => item !== value)
+        if (!Array.isArray(expected)) {
+          return false
+        }
+        return Array.isArray(value)
+          ? value.every((item) => !expected.includes(item))
+          : expected.every((item) => item !== value)
       case '$exists':
         return (value !== undefined) === Boolean(expected)
       case '$contains':
