@@ -36,6 +36,7 @@ export default function App() {
   const [query, setQuery] = useState<QueryInput>({ ...DEFAULT_QUERY })
   const [submittedQuery, setSubmittedQuery] = useState<QueryInput>({ ...DEFAULT_QUERY })
   const [page, setPage] = useState<DocumentPage | null>(null)
+  const [lastDuration, setLastDuration] = useState<number | null>(null)
   const [tab, setTab] = useState<Tab>('explore')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -148,11 +149,13 @@ export default function App() {
       return
     }
 
+    const startedAt = performance.now()
     repository
       .findDocuments(database, collection, submittedQuery)
       .then((result) => {
         if (!cancelled) {
           setPage(result)
+          setLastDuration(Math.round(performance.now() - startedAt))
         }
       })
       .catch((cause: unknown) => {
@@ -403,6 +406,7 @@ export default function App() {
               eyebrow={collection || '—'}
               title="Documents"
               countLabel={page ? `${page.total} trouvé${page.total > 1 ? 's' : ''}` : '—'}
+              durationMs={lastDuration}
               documents={documents}
               loading={loading}
               emptyMessage="Aucun document à afficher."
@@ -456,6 +460,7 @@ export default function App() {
                   : 'Sélectionnez une collection'
               }
               countLabel={String(page?.total ?? 0)}
+              durationMs={lastDuration}
               documents={documents}
               loading={loading}
               error={error}
