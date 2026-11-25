@@ -28,7 +28,6 @@ npm run build
 
 ## Idées de PR
 
-- export CSV des résultats,
 - vue arborescente des collections,
 - raccourcis clavier,
 - cache des dernières requêtes,
