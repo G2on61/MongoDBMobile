@@ -2,6 +2,7 @@ import { createServer } from 'node:http'
 import { demoDatabases, getDemoCollections, getDemoDocuments } from '../src/data/demoData.ts'
 import { applyQuery, normalizeQuery, parseJsonObject } from '../src/lib/query.ts'
 import { publicConnections, readConnections } from './config.js'
+import { serialize } from './serialize.js'
 
 const PORT = Number(process.env.PORT ?? 8787)
 const connections = readConnections()
@@ -50,27 +51,6 @@ function readBody(request) {
     request.on('end', () => resolve(body))
     request.on('error', reject)
   })
-}
-
-function serialize(value) {
-  if (value === null || value === undefined) {
-    return null
-  }
-  if (value instanceof Date) {
-    return value.toISOString()
-  }
-  if (typeof value !== 'object') {
-    return value
-  }
-  if (typeof value._bsontype === 'string') {
-    return value.toString()
-  }
-  if (Array.isArray(value)) {
-    return value.map(serialize)
-  }
-  return Object.fromEntries(
-    Object.entries(value).map(([key, child]) => [key, serialize(child)]),
-  )
 }
 
 async function getClient(connectionId) {
