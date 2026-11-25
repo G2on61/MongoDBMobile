@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { DocumentCard } from './components/DocumentCard.tsx'
 import { DocumentSheet } from './components/DocumentSheet.tsx'
 import { QueryPanel } from './components/QueryPanel.tsx'
+import { ResultsList } from './components/ResultsList.tsx'
 import {
   checkGateway,
   createDemoRepository,
@@ -9,7 +9,6 @@ import {
   DEMO_CONNECTION,
   fetchGatewayConnections,
 } from './lib/repository.ts'
-import { downloadCsv } from './lib/export.ts'
 import { DEFAULT_QUERY } from './lib/query.ts'
 import { loadHistory, pushHistory } from './lib/queryHistory.ts'
 import { loadSavedQueries, persistSavedQueries } from './lib/savedQueries.ts'
@@ -400,67 +399,42 @@ export default function App() {
               </div>
             </section>
 
-            <section className="panel results">
-              <div className="panel-header">
-                <div>
-                  <p className="eyebrow">{collection || '—'}</p>
-                  <h2>Documents</h2>
-                </div>
-                <div className="header-actions">
-                  <span className="pill">
-                    {page ? `${page.total} trouvé${page.total > 1 ? 's' : ''}` : '—'}
-                  </span>
-                  <button
-                    type="button"
-                    className="button secondary compact"
-                    onClick={() => downloadCsv(documents, `${database}-${collection}`)}
-                    disabled={documents.length === 0}
-                  >
-                    CSV ↓
-                  </button>
-                </div>
-              </div>
-              {loading && (
-                <p className="empty" role="status" aria-live="polite">
-                  Chargement…
-                </p>
-              )}
-              {!loading && documents.length === 0 && (
-                <p className="empty">Aucun document à afficher.</p>
-              )}
-              <div className="documents">
-                {documents.map((document, index) => (
-                  <DocumentCard
-                    key={String(document._id ?? index)}
-                    document={document}
-                    onOpen={setSelectedDocument}
-                  />
-                ))}
-              </div>
-              {page && page.total > page.limit && (
-                <div className="pagination">
-                  <button
-                    type="button"
-                    className="button secondary"
-                    onClick={() => changePage(-1)}
-                    disabled={page.skip === 0}
-                  >
-                    ← Précédent
-                  </button>
-                  <span>
-                    {page.skip + 1}–{Math.min(page.skip + page.limit, page.total)} / {page.total}
-                  </span>
-                  <button
-                    type="button"
-                    className="button secondary"
-                    onClick={() => changePage(1)}
-                    disabled={page.skip + page.limit >= page.total}
-                  >
-                    Suivant →
-                  </button>
-                </div>
-              )}
-            </section>
+            <ResultsList
+              eyebrow={collection || '—'}
+              title="Documents"
+              countLabel={page ? `${page.total} trouvé${page.total > 1 ? 's' : ''}` : '—'}
+              documents={documents}
+              loading={loading}
+              emptyMessage="Aucun document à afficher."
+              database={database}
+              collection={collection}
+              onOpen={setSelectedDocument}
+              footer={
+                page && page.total > page.limit ? (
+                  <div className="pagination">
+                    <button
+                      type="button"
+                      className="button secondary"
+                      onClick={() => changePage(-1)}
+                      disabled={page.skip === 0}
+                    >
+                      ← Précédent
+                    </button>
+                    <span>
+                      {page.skip + 1}–{Math.min(page.skip + page.limit, page.total)} / {page.total}
+                    </span>
+                    <button
+                      type="button"
+                      className="button secondary"
+                      onClick={() => changePage(1)}
+                      disabled={page.skip + page.limit >= page.total}
+                    >
+                      Suivant →
+                    </button>
+                  </div>
+                ) : null
+              }
+            />
           </div>
         )}
 
@@ -474,43 +448,22 @@ export default function App() {
               canSave={Boolean(database && collection)}
               running={loading}
             />
-            <section className="panel results">
-              <div className="panel-header">
-                <div>
-                  <p className="eyebrow">Résultat</p>
-                  <h2>{database && collection ? `${database}.${collection}` : 'Sélectionnez une collection'}</h2>
-                </div>
-                <div className="header-actions">
-                  <span className="pill">{page?.total ?? 0}</span>
-                  <button
-                    type="button"
-                    className="button secondary compact"
-                    onClick={() => downloadCsv(documents, `${database}-${collection}`)}
-                    disabled={documents.length === 0}
-                  >
-                    CSV ↓
-                  </button>
-                </div>
-              </div>
-              {error && <p className="empty error-text">{error}</p>}
-              {!error && loading && (
-                <p className="empty" role="status" aria-live="polite">
-                  Exécution…
-                </p>
-              )}
-              {!error && !loading && documents.length === 0 && (
-                <p className="empty">Aucun document ne correspond au filtre.</p>
-              )}
-              <div className="documents">
-                {documents.map((document, index) => (
-                  <DocumentCard
-                    key={String(document._id ?? index)}
-                    document={document}
-                    onOpen={setSelectedDocument}
-                  />
-                ))}
-              </div>
-            </section>
+            <ResultsList
+              eyebrow="Résultat"
+              title={
+                database && collection
+                  ? `${database}.${collection}`
+                  : 'Sélectionnez une collection'
+              }
+              countLabel={String(page?.total ?? 0)}
+              documents={documents}
+              loading={loading}
+              error={error}
+              emptyMessage="Aucun document ne correspond au filtre."
+              database={database}
+              collection={collection}
+              onOpen={setSelectedDocument}
+            />
           </div>
         )}
 
