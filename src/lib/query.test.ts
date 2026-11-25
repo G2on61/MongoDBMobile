@@ -64,6 +64,39 @@ describe('applyQuery', () => {
   })
 })
 
+describe('opérateurs avancés', () => {
+  it('gère $ne et $lt', () => {
+    const result = applyQuery(documents, {
+      ...baseQuery,
+      filter: '{"city":{"$ne":"Lyon"},"score":{"$lt":80}}',
+    })
+    expect(result.documents.map((doc) => doc._id)).toEqual(['c'])
+  })
+
+  it('gère $nin et $exists', () => {
+    expect(
+      applyQuery(documents, { ...baseQuery, filter: '{"tags":{"$nin":["vip"]}}' }).total,
+    ).toBe(1)
+    expect(
+      applyQuery(documents, { ...baseQuery, filter: '{"city":{"$exists":true}}' }).total,
+    ).toBe(3)
+  })
+
+  it('gère $regex et $and', () => {
+    const result = applyQuery(documents, {
+      ...baseQuery,
+      filter: '{"$and":[{"name":{"$regex":"^A"}},{"score":{"$gt":80}}]}',
+    })
+    expect(result.documents.map((doc) => doc._id)).toEqual(['a'])
+  })
+
+  it('rejette un opérateur inconnu', () => {
+    expect(() =>
+      applyQuery(documents, { ...baseQuery, filter: '{"score":{"$unknown":1}}' }),
+    ).toThrow('Opérateur non pris en charge')
+  })
+})
+
 describe('normalizeQuery', () => {
   it('borne la limite et le décalage', () => {
     expect(normalizeQuery({ ...baseQuery, limit: 500, skip: -4 })).toMatchObject({
