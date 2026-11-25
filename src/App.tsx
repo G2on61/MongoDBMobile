@@ -8,6 +8,7 @@ import {
   createGatewayRepository,
   DEMO_CONNECTION,
   fetchGatewayConnections,
+  fetchGatewayVersion,
 } from './lib/repository.ts'
 import { DEFAULT_QUERY } from './lib/query.ts'
 import { loadHistory, pushHistory } from './lib/queryHistory.ts'
@@ -29,6 +30,7 @@ export default function App() {
   const [connections, setConnections] = useState<ConnectionInfo[]>([DEMO_CONNECTION])
   const [connectionId, setConnectionId] = useState(DEMO_CONNECTION.id)
   const [gatewayOnline, setGatewayOnline] = useState(false)
+  const [gatewayVersion, setGatewayVersion] = useState<string | null>(null)
   const [databases, setDatabases] = useState<string[]>([])
   const [database, setDatabase] = useState('')
   const [collections, setCollections] = useState<string[]>([])
@@ -69,6 +71,7 @@ export default function App() {
       if (!online) {
         return
       }
+      setGatewayVersion(await fetchGatewayVersion())
       const remote = await fetchGatewayConnections()
       if (!cancelled && remote.length > 0) {
         setConnections([DEMO_CONNECTION, ...remote])
@@ -314,7 +317,11 @@ export default function App() {
             ))}
           </select>
           <span className={`status ${gatewayOnline ? 'online' : 'offline'}`}>
-            {currentConnection.kind === 'demo' ? 'Mode démo' : gatewayOnline ? 'Gateway' : 'Hors ligne'}
+            {currentConnection.kind === 'demo'
+              ? 'Mode démo'
+              : gatewayOnline
+                ? `Gateway${gatewayVersion ? ` v${gatewayVersion}` : ''}`
+                : 'Hors ligne'}
           </span>
         </div>
         <button

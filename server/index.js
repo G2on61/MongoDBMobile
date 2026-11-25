@@ -3,6 +3,7 @@ import { demoDatabases, getDemoCollections, getDemoDocuments } from '../src/data
 import { applyQuery, normalizeQuery, parseJsonObject } from '../src/lib/query.ts'
 import { publicConnections, readConnections } from './config.js'
 import { serialize } from './serialize.js'
+import { GATEWAY_VERSION } from './version.js'
 
 const PORT = Number(process.env.PORT ?? 8787)
 const connections = readConnections()
@@ -131,6 +132,14 @@ const server = createServer(async (request, response) => {
     if (request.method === 'GET' && url.pathname === '/api/health') {
       send(response, 200, {
         ok: true,
+        mode: connections.length > 0 ? 'mongodb' : 'demo',
+      })
+      return
+    }
+
+    if (request.method === 'GET' && url.pathname === '/api/version') {
+      send(response, 200, {
+        version: GATEWAY_VERSION,
         mode: connections.length > 0 ? 'mongodb' : 'demo',
       })
       return
