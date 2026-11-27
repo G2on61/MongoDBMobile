@@ -31,6 +31,7 @@ MongoDBMobile sépare volontairement l'interface du stockage : le navigateur ne 
 `server/index.js` expose uniquement :
 
 - `GET /api/health`
+- `GET /api/version`
 - `GET /api/connections`
 - `GET /api/databases`
 - `GET /api/collections?database=…`
