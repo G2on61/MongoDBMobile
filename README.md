@@ -22,6 +22,10 @@ Le vrai besoin : consulter une base en déplacement (debug d'une issue en produc
 - Mode démo intégré : fonctionne sans MongoDB et sans gateway.
 - Interface responsive : barre d'onglets en bas sur mobile, en haut sur desktop, dark mode.
 
+## Prérequis
+
+Node 24+ (version utilisée par la CI).
+
 ## Démarrage
 
 ```bash
@@ -63,7 +67,7 @@ src/            interface React, moteur de requête, dépôts (démo / HTTP)
 server/         gateway Node : validation, liste des bases, find() en lecture seule
 ```
 
-Le dépôt HTTP envoie l'en-tête `X-Connection-Id` au gateway. Celui-ci choisit le client MongoDB correspondant, borne la limite à 100 documents et sérialise les ObjectId en chaînes. Voir [ARCHITECTURE.md](ARCHITECTURE.md).
+`GET /api/version` renvoie la version du gateway, affichée dans l'en-tête de l'application. Le dépôt HTTP envoie l'en-tête `X-Connection-Id` au gateway. Celui-ci choisit le client MongoDB correspondant, borne la limite à 100 documents et sérialise les ObjectId en chaînes. Voir [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Sécurité
 
